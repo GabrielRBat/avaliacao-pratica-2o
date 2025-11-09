@@ -1,21 +1,15 @@
 public class Main {
     public static void main(String[] args) {
 
-        RiskContext context = new RiskContext(1_000_000, 0.15, 0.05);
+        SistemaBancarioLegado legado = new SistemaBancarioLegado();
 
-        RiskHandler varHandler = new ValueAtRiskHandler();
-        RiskHandler esHandler = new ExpectedShortfallHandler();
-        RiskHandler stressHandler = new StressTestingHandler();
 
-        varHandler.setNext(esHandler).setNext(stressHandler);
+        ProcessadorTransacoes processador = new GatewayAdapter(legado);
 
-        System.out.println("=== Execução 1: VaR ===");
-        varHandler.handle("VaR", context);
+        System.out.println("=== Teste 1 ===");
+        processador.autorizar("4111-2222-3333-4444", 250.0, "BRL");
 
-        System.out.println("=== Execução 2: ES ===");
-        varHandler.handle("ES", context);
-
-        System.out.println("=== Execução 3: Stress ===");
-        varHandler.handle("Stress", context);
+        System.out.println("\n=== Teste 2 (simulando outro valor) ===");
+        processador.autorizar("5555-6666-7777-8888", 750.0, "USD");
     }
 }
