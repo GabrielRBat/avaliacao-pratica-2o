@@ -1,15 +1,22 @@
+// Main.java
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
+        UsinaNuclear usina = new UsinaNuclear();
 
-        SistemaBancarioLegado legado = new SistemaBancarioLegado();
+        System.out.println("Estado inicial: " + usina.getEstadoAtual().getNome());
 
+        usina.atualizarLeituras(100, 2.0, 0.01, false);
+        usina.atualizarLeituras(320, 2.5, 0.02, false);  // Vai para Alerta Amarelo
+        Thread.sleep(31000); 
+        usina.atualizarLeituras(420, 2.6, 0.02, false);  // Vai para Alerta Vermelho
+        usina.atualizarLeituras(420, 2.8, 0.03, true);   // Falha de resfriamento → Emergência
 
-        ProcessadorTransacoes processador = new GatewayAdapter(legado);
+        // Ativa manutenção
+        usina.ativarModoManutencao(true);
+        usina.atualizarLeituras(100, 2.0, 0.01, false);
 
-        System.out.println("=== Teste 1 ===");
-        processador.autorizar("4111-2222-3333-4444", 250.0, "BRL");
-
-        System.out.println("\n=== Teste 2 (simulando outro valor) ===");
-        processador.autorizar("5555-6666-7777-8888", 750.0, "USD");
+        // Desativa manutenção
+        usina.ativarModoManutencao(false);
+        usina.atualizarLeituras(200, 2.0, 0.01, false);
     }
 }
